@@ -23,7 +23,7 @@ jobs:
         run: npm install
         
       - name: Install submodule
-        run: npm add eufy-security-client/ && npm install
+        run: npm add eufy-security-client/
 
       - name: Lint the project
         run: npm run lint
