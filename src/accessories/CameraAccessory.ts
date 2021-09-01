@@ -51,7 +51,7 @@ export class CameraAccessory extends DeviceAccessory {
           'videoConfig': {
             'stillImageSource': '',
             'audio': true,
-            'debug': true,
+            'debug': false,
           } as VideoConfig,
         };
 
