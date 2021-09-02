@@ -1,6 +1,6 @@
 # Change Log
 
-## RELEASE CANDIDATE
+## 1.0.0 (09/02/2021)
 
 ### Added
 -   Increase compatibility with new Eufy Camera devices
