@@ -6,7 +6,7 @@ on:
       version:
         description: 'premajor/prerelease/prepatch/major/minor/patch'
         required: true
-        default: 'prerelease'
+        default: 'patch'
       tag:
         description: 'latest/rc/beta'
         required: true
@@ -14,11 +14,11 @@ on:
       preid:
         description: 'rc/beta'
         required: true
-        default: 'rc'
+        default: ''
       branch:
         description: 'master/next/beta'
         required: true
-        default: 'next'
+        default: 'master'
         
 jobs:
 
