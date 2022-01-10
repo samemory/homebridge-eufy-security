@@ -2,7 +2,7 @@ import { Service, PlatformAccessory, CharacteristicValue } from 'homebridge';
 
 import { EufySecurityPlatform } from '../platform';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore  
+// @ts-ignore
 import { Station, DeviceType, PropertyName, PropertyValue, AlarmEvent } from 'eufy-security-client';
 
 /**
@@ -91,9 +91,18 @@ export class StationAccessory {
   ): void {
     this.platform.log.debug(this.accessory.displayName, 'ON SecurityGuardMode:', guardMode);
     const homekitCurrentMode = this.convertEufytoHK(guardMode);
+
+    // fullphat: also both SecuritySystemCurrentState to avoid HomeKit getting stuck 'Arming...' or 'Disarming...'
+    if (this.isFloodlightCamera) {
+      this.service
+        .getCharacteristic(this.characteristic.SecuritySystemCurrentState)
+        .updateValue(homekitCurrentMode);
+      }
+
     this.service
       .getCharacteristic(this.characteristic.SecuritySystemTargetState)
       .updateValue(homekitCurrentMode);
+
   }
 
   private onStationCurrentModePushNotification(
@@ -101,10 +110,19 @@ export class StationAccessory {
     currentMode: number,
   ): void {
     this.platform.log.debug(this.accessory.displayName, 'ON SecuritySystemCurrentState:', currentMode);
-    const homekitCurrentMode = this.convertEufytoHK(currentMode);
-    this.service
-      .getCharacteristic(this.characteristic.SecuritySystemCurrentState)
-      .updateValue(homekitCurrentMode);
+
+    // fullphat: only process this if the station is *not* a T8420 camera...
+    if (!this.isFloodlightCamera) {
+      const homekitCurrentMode = this.convertEufytoHK(currentMode);
+      this.platform.log.info('SecuritySystemCurrentState translated to HomeKit mode:', homekitCurrentMode);
+      this.service
+          .getCharacteristic(this.characteristic.SecuritySystemCurrentState)
+          .updateValue(homekitCurrentMode);
+    }
+    else {
+      this.platform.log.info('ignoring (station is a T8420 camera)');
+    }
+
   }
 
   private onStationAlarmEventPushNotification(
@@ -167,6 +185,17 @@ export class StationAccessory {
     return modeObj[0] ? modeObj[0].hk : eufyMode;
   }
 
+
+  // fullphat: simple helper function that determines if this is a Floodlight Camera (T8420) or note
+  // can be replaced with something more suitable
+  isFloodlightCamera() {
+    const isFloodlightCam = this.eufyStation.getModel() == "T8420";
+    // this.platform.log.info('isFloodlightCamera:', this.eufyStation.getModel(), isFloodlightCam);
+    return isFloodlightCam;
+  }
+
+
+
   /**
    * Handle requests to get the current value of the 'Security System Current State' characteristic
    */
@@ -175,12 +204,28 @@ export class StationAccessory {
       return this.characteristic.SecuritySystemCurrentState.ALARM_TRIGGERED;
     }
     try {
-      const currentValue = this.eufyStation.getPropertyValue(PropertyName.StationCurrentMode);
-      this.platform.log.debug(this.accessory.displayName, 'GET StationCurrentMode:', currentValue);
-      return this.convertEufytoHK(currentValue.value) as number;
-    } catch {
-      this.platform.log.error(this.accessory.displayName, 'handleSecuritySystemCurrentStateGet', 'Wrong return value');
-      return false;
+
+      // fullphat: use StationCurrentMode rather than StationGuardMode here as the latter is more reliable
+      // (StationCurrentMode often returns -1 as the value and 0 as the timestamp)
+      // const currentValue = this.eufyStation.getPropertyValue(eufy_security_client_1.PropertyName.StationGuardMode);
+      var propertyToUse = eufy_security_client_1.PropertyName.StationCurrentMode;
+      if (this.isFloodlightCamera()) {
+        this.platform.log.info(this.accessory.displayName, 'station is a floodlight camera so using GuardMode property instead');
+        propertyToUse = eufy_security_client_1.PropertyName.StationGuardMode
+      }
+
+      // fullphat: now read the correct property value
+      const currentValue = this.eufyStation.getPropertyValue(propertyToUse);
+      this.platform.log.info(this.accessory.displayName, 'GET StationGuardMode:', currentValue);
+
+      // fullphat: this shouldn't happen, but just in case...
+      const hkValue = this.convertEufytoHK(currentValue.value)
+      if (hkValue == -1) {
+        this.platform.log.warn('handleSecuritySystemCurrentStateGet: WARNING: converting invalid value', hkValue, 'to 1');
+        hkValue = 1;
+      }
+      return hkValue;
+      
     }
   }
 
