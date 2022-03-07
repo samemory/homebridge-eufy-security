@@ -7,7 +7,7 @@ import { DeviceAccessory } from './Device';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore  
-import { Device, Lock, PropertyName, DeviceProperties } from 'eufy-security-client';
+import { Device, Lock, PropertyName } from 'eufy-security-client';
 
 /**
  * Platform Accessory
