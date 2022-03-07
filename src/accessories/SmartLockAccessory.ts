@@ -71,10 +71,9 @@ export class SmartLockAccessory extends DeviceAccessory {
   }
 
   async handleLockTargetStateSet(value) {
-    this.platform.log.debug(this.accessory.displayName, 'Triggered SET LockTargetState:', value);   
-    const stationSn = this.SmartLock.getStationSerial();
-    const station = this.platform.getStationById(stationSn);
-
+    this.platform.log.debug(this.accessory.displayName, 'Triggered SET LockTargetState', value);   
+    const stationSerial = this.SmartLock.getStationSerial();
+    const station = this.platform.getStationById(stationSerial);
     station.lockDevice(this.SmartLock, !!value);
   }
 
