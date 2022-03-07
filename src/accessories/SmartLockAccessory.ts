@@ -7,7 +7,7 @@ import { DeviceAccessory } from './Device';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore  
-import { Device, Lock, PropertyName } from 'eufy-security-client';
+import { Device, Lock, PropertyName, DeviceProperties } from 'eufy-security-client';
 
 /**
  * Platform Accessory
@@ -70,8 +70,12 @@ export class SmartLockAccessory extends DeviceAccessory {
     return lockStatus as number;
   }
 
-  async handleLockTargetStateSet() {
-    this.platform.log.warn(this.accessory.displayName, 'Open/Close trigger is not implemented');
+  async handleLockTargetStateSet(value) {
+    this.platform.log.debug(this.accessory.displayName, 'Triggered SET LockTargetState:', value);   
+    const stationSn = this.SmartLock.getStationSerial();
+    const station = this.platform.getStationById(stationSn);
+
+    station.lockDevice(this.SmartLock, !!value);
   }
 
   getLockStatus(current = true) {
