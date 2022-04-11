@@ -1,7 +1,7 @@
 name: 'Close stale issues and PRs'
 on:
   schedule:
-    - cron: '30 1 * * *'
+    - cron: '15 * * * *'
 
 jobs:
   stale:
@@ -10,9 +10,7 @@ jobs:
       - uses: actions/stale@v4
         with:
           exempt-all-pr-assignees: true
-          stale-issue-message: 'This issue is stale because it has been open 30 days with no activity. Remove stale label or comment or this will be closed in 5 days.'
-          stale-pr-message: 'This PR is stale because it has been open 45 days with no activity. Remove stale label or comment or this will be closed in 10 days.'
-          close-issue-message: 'This issue was closed because it has been stalled for 5 days with no activity.'
-          days-before-stale: 20
-          days-before-close: 5
-          days-before-pr-close: 45
+          close-issue-message: 'We do not accept issue on this repo. Please submit your issue on this repo : https://github.com/homebridge-eufy-security/plugin/issues, thanks. If you have any questions, please feel free to contact us.'
+          close-pr-message: 'We do not accept PR on this repo. Please submit your issue on this repo : https://github.com/homebridge-eufy-security/plugin/pulls, thanks. If you have any questions, please feel free to contact us.'
+          days-before-close: 0
+          days-before-pr-close: 0

@@ -3,9 +3,9 @@ labels:
     labeled:
       issue:
         body: |
-          Did you check this [Common Issues](https://github.com/samemory/homebridge-eufy-security/wiki/Common-Issues) pages ?
+          We do not accept bug on this repo. Please submit your issue on this repo : https://github.com/homebridge-eufy-security/plugin/issues/new/choose, thanks. If you have any questions, please feel free to contact us.
   - name: enhancement
     labeled:
       issue:
         body: |
-          Did you check this [Road Map](https://github.com/samemory/homebridge-eufy-security/projects/4) pages ?
+          We do not accept enhancement on this repo. Please submit your enhancement on this repo : https://github.com/homebridge-eufy-security/plugin/issues/new/choose, thanks. If you have any questions, please feel free to contact us.
