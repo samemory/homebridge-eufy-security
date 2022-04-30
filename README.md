@@ -1,6 +1,6 @@
 Hello,
 
-We have included many features between 1.0 and the new 1.1 (current beta branch).
+We have included many features between 1.0 and the new 2.0 (current beta branch).
 
 Many settings have been moved/reorganized. It is recommended to delete your current configuration and start from scratch. A good time to see all the changes we've made to the user interface.
 
