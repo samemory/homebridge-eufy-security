@@ -1,4 +1,4 @@
-Hello,
+Damarcus Jones,
 
 We have included many features between 1.0 and the new 2.0 (current beta branch).
 
